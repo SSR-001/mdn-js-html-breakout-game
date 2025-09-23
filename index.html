@@ -30,6 +30,13 @@
 
       const ballRadius = 10
 
+      const paddleHeight = 10
+      const paddleWidth = 75
+      let paddleX = (canvas.width - paddleWidth) / 2
+
+      let leftPressed = false
+      let rightPressed = false
+
       function drawBall() {
         ctx.beginPath();
         ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
@@ -41,10 +48,11 @@
       function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height)
         drawBall()
+        drawPaddle()
         x += dx
         y += dy
 
-        //This bounces off th etop and bottom edge
+        //This bounces off the top and bottom edge
         if (y + dy > canvas.height - ballRadius || y + dy < ballRadius) {
           dy = -dy
         }
@@ -54,7 +62,39 @@
           dx = -dx
         }
 
+        if(rightPressed) {
+          paddleX = Math.min(paddleX + 7, canvas.width - paddleWidth)
+        } else if (leftPressed) {
+          paddleX = Math.max(paddleX -7, 0)
+        }
 
+      }
+
+      function drawPaddle() {
+        ctx.beginPath()
+        ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight)
+        ctx.fillstyle = "#0095DD"
+        ctx.fill()
+        ctx.closePath()
+      }
+
+      document.addEventListener("keydown", keyDownHandler)
+      document.addEventListener("keyup", keyUpHandler)
+
+      function keyDownHandler(e) {
+        if (e.key === "Right" || e.key === "ArrowRight") {
+          rightPressed = true
+        } else if (e.key === "Left" || e.key === "ArrowLeft") {
+          leftPressed = true
+        }
+      }
+
+      function keyUpHandler(e) {
+        if (e.key === "Right" || e.key === "ArrowRight") {
+          rightPressed = false
+        } else if (e.key === "Left" || e.key === "ArrowLeft") {
+          leftPressed = false
+        }
       }
 
       setInterval(draw, 10);
